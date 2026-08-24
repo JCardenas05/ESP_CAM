@@ -1,0 +1,30 @@
+idf_component_register(
+    SRCS
+        "main.c"
+        "LCD_Driver/LCD_Driver.c"
+        "Touch_Driver/Touch_Driver.c"
+        "LVGL_Driver/LVGL_Driver.c"
+        "Camera_Driver/Camera_Driver.c"
+        "UI/ui.c"
+
+    INCLUDE_DIRS
+        "."
+        "./Board"
+        "./LCD_Driver"
+        "./Touch_Driver"
+        "./LVGL_Driver"
+        "./Camera_Driver"
+        "./UI"
+
+    REQUIRES
+        esp_lcd
+        esp_driver_spi
+        esp_driver_gpio
+        esp_driver_ledc
+        driver
+        esp_timer
+        mbedtls
+        esp_http_client
+        Wifi_Connect
+        HTTPClient
+)

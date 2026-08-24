@@ -1,0 +1,6 @@
+.venv/
+.env
+__pycache__/
+data/originales/*
+data/resultados/*
+!data/*/.gitkeep

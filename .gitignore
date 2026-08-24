@@ -1,0 +1,8 @@
+# Entorno del PC, no del proyecto
+__pycache__/
+*.pyc
+.venv/
+
+# Demos oficiales de Waveshare: son de terceros, no se redistribuyen aqui.
+# Descargarlos de la wiki de la placa si hacen falta como referencia.
+reference/

@@ -1,0 +1,27 @@
+menu "ESP_CAM Configuration"
+
+    config ESP_CAM_WIFI_SSID
+        string "Nombre de la red WiFi (SSID)"
+        default ""
+        help
+            Red a la que se conecta la camara. Se guarda en sdkconfig, que esta
+            en .gitignore, asi que no acaba en el repositorio.
+
+    config ESP_CAM_WIFI_PASSWORD
+        string "Contrasena de la red WiFi"
+        default ""
+        help
+            Dejar vacio para redes abiertas.
+
+    config ESP_CAM_SERVER_URL
+        string "URL base del proxy de estilizacion"
+        default "http://192.168.1.14:8000"
+        help
+            Sin barra final. El firmware le anade /health y /stylize.
+            Tiene que ser la IP del PC en la LAN, no 127.0.0.1.
+
+    config ESP_CAM_HTTP_TIMEOUT_MS
+        int "Timeout de las peticiones HTTP (ms)"
+        default 90000
+
+endmenu
