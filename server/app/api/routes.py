@@ -4,10 +4,11 @@ import time
 from datetime import datetime
 from pathlib import Path
 
-from fastapi import APIRouter, File, Form, HTTPException, Response, UploadFile
+from fastapi import APIRouter, Depends, File, Form, HTTPException, Response, UploadFile
 from fastapi.responses import StreamingResponse
 from PIL import Image
 
+from app.core.auth import requiere_token
 from app.core.config import Config
 from app.models.stylize import Style
 from app.services import cache
@@ -31,7 +32,7 @@ def health() -> dict:
     }
 
 
-@router.post("/echo")
+@router.post("/echo", dependencies=[Depends(requiere_token)])
 async def echo(image: UploadFile = File(...), style: str = Form("test")) -> Response:
     """Prueba de red: mismo formato que /stylize pero sin llamar a la IA.
 
@@ -53,7 +54,7 @@ async def echo(image: UploadFile = File(...), style: str = Form("test")) -> Resp
                     headers={"X-Received": str(len(crudo))})
 
 
-@router.post("/stylize")
+@router.post("/stylize", dependencies=[Depends(requiere_token)])
 async def stylize(
     image: UploadFile = File(...),
     style: Style = Form(Style.ANIME),

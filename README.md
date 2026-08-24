@@ -29,6 +29,17 @@ internal RAM left once WiFi is up.
 
 The proxy also absorbs the API key, which therefore never lives in the device's flash.
 
+## Authentication
+
+Every `POST /stylize` is a billed call to OpenAI, so once the proxy is reachable from
+the internet it needs a door. Set `ESPCAM_TOKEN` in the server's `.env` and the same
+value in the firmware's `menuconfig`; the board sends it as `Authorization: Bearer …`
+and anything else gets a 401.
+
+Leaving `ESPCAM_TOKEN` empty disables the check entirely — which is fine on a closed
+LAN and reckless anywhere else. `GET /health` stays open either way: it carries no cost
+and it is what keeps the reused TCP socket warm.
+
 ## What's in here
 
 | Directory | Contents |

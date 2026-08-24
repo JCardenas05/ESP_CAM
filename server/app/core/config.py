@@ -9,6 +9,10 @@ class Config:
     """Configuración base del proxy de estilización."""
 
     ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")
+
+    # Token compartido con el firmware. Vacio = sin autenticacion, que es lo
+    # correcto en la LAN y lo suicida en internet: cada /stylize cuesta dinero.
+    AUTH_TOKEN: str = os.getenv("ESPCAM_TOKEN", "")
     DEBUG: bool = os.getenv("DEBUG", "false").lower() in ("1", "true", "yes")
 
     class OpenAI:
