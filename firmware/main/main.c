@@ -251,7 +251,9 @@ void app_main(void)
     framing_init(CAMERA_PREVIEW_W, CAMERA_PREVIEW_H);
 
     conectar_red();
-    xTaskCreate(tarea_salud, "salud", 4096, NULL, 2, NULL);
+    /* 8192 y no 4096: esta tarea tambien abre conexiones TLS, y el
+     * handshake se come varios KB de pila que antes no hacian falta. */
+    xTaskCreate(tarea_salud, "salud", 8192, NULL, 2, NULL);
     ESP_LOGI(TAG, "listo. Interna %u KB | PSRAM %u KB",
              (unsigned)(heap_caps_get_free_size(MALLOC_CAP_INTERNAL) / 1024),
              (unsigned)(heap_caps_get_free_size(MALLOC_CAP_SPIRAM) / 1024));

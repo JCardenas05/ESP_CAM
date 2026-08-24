@@ -37,3 +37,13 @@ CONFIG_LV_USE_PERF_MONITOR=n
 # se atasca tras los primeros 4 KB esperando ACK.
 CONFIG_LWIP_TCP_SND_BUF_DEFAULT=65534
 CONFIG_LWIP_TCP_WND_DEFAULT=65534
+
+# --- TLS ---
+# El handshake fallaba con MBEDTLS_ERR_MPI_ALLOC_FAILED: con la camara en visor
+# quedaba 1 KB de RAM interna y las operaciones de clave publica no tenian de
+# donde tirar. La PSRAM tiene 7,4 MB libres, asi que mbedtls asigna de ahi.
+CONFIG_MBEDTLS_EXTERNAL_MEM_ALLOC=y
+
+# El handshake necesita mucha mas pila que el HTTP plano: con 3584 la tarea
+# main desbordaba justo al abrir la conexion para subir la foto.
+CONFIG_ESP_MAIN_TASK_STACK_SIZE=12288
