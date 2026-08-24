@@ -6,6 +6,7 @@ idf_component_register(
     REQUIRES
         esp_http_client
         esp_timer
-        esp_timer
         log
+    PRIV_REQUIRES
+        mbedtls
 )

@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include "esp_check.h"
+#include "esp_crt_bundle.h"
 #include "esp_http_client.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/semphr.h"
@@ -12,6 +13,12 @@
 #include "esp_timer.h"
 
 static const char *TAG = "http_client";
+
+#ifdef CONFIG_ESP_CAM_AUTH_TOKEN
+#define TOKEN CONFIG_ESP_CAM_AUTH_TOKEN
+#else
+#define TOKEN ""
+#endif
 
 /* Un unico cliente para todas las peticiones.
  *
@@ -45,6 +52,11 @@ static esp_err_t cliente_preparar(const char *url, esp_http_client_method_t meto
             .url = url,
             .timeout_ms = timeout_ms,
             .keep_alive_enable = true,
+            /* Necesario desde que el proxy vive detras de Cloudflare y se habla
+             * por https. El bundle son las CA publicas que trae ESP-IDF, las
+             * mismas que usa el firmware de Pomodoro contra esta misma VM.
+             * Con http:// el campo se ignora, asi que no estorba en la LAN. */
+            .crt_bundle_attach = esp_crt_bundle_attach,
         };
         s_cliente = esp_http_client_init(&cfg);
         ESP_RETURN_ON_FALSE(s_cliente != NULL, ESP_FAIL, TAG, "no se pudo crear el cliente HTTP");
@@ -53,6 +65,13 @@ static esp_err_t cliente_preparar(const char *url, esp_http_client_method_t meto
     ESP_RETURN_ON_ERROR(esp_http_client_set_method(s_cliente, metodo), TAG, "fijar metodo");
     esp_http_client_set_timeout_ms(s_cliente, timeout_ms);
     esp_http_client_delete_header(s_cliente, "Content-Type");
+
+    /* El proxy publicado en internet exige este token en /stylize: sin el,
+     * cualquiera que de con la URL gasta el saldo de OpenAI. Se manda tambien
+     * en /health, que no lo pide, por no llevar dos caminos distintos. */
+    if (TOKEN[0] != '\0') {
+        esp_http_client_set_header(s_cliente, "Authorization", "Bearer " TOKEN);
+    }
     return ESP_OK;
 }
 

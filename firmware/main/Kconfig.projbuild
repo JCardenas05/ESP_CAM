@@ -15,10 +15,22 @@ menu "ESP_CAM Configuration"
 
     config ESP_CAM_SERVER_URL
         string "URL base del proxy de estilizacion"
-        default "http://192.168.1.14:8000"
+        default "https://cam.j-cardenas.com"
         help
             Sin barra final. El firmware le anade /health y /stylize.
-            Tiene que ser la IP del PC en la LAN, no 127.0.0.1.
+            Con https:// se valida el certificado contra el bundle de CA de
+            ESP-IDF. Para un proxy en la LAN vale http://IP-DEL-PC:8000, pero
+            nunca 127.0.0.1, que para la placa es ella misma.
+
+    config ESP_CAM_AUTH_TOKEN
+        string "Token compartido con el proxy"
+        default ""
+        help
+            Tiene que coincidir con ESPCAM_TOKEN del .env del servidor. Se manda
+            como cabecera Authorization: Bearer. Dejarlo vacio solo si el proxy
+            esta en una LAN cerrada; publicado en internet, sin token cualquiera
+            puede gastar el saldo de OpenAI. Se guarda en sdkconfig, que esta en
+            .gitignore.
 
     config ESP_CAM_HTTP_TIMEOUT_MS
         int "Timeout de las peticiones HTTP (ms)"
