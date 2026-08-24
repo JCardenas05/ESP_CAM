@@ -14,6 +14,7 @@ from app.models.stylize import Style
 from app.services import cache
 from app.services.openai_image import stylize_stream
 from app.tools.framing import center_square
+from app.tools.retencion import podar
 from app.tools.rgb565 import to_rgb565_be
 
 log = logging.getLogger(__name__)
@@ -96,6 +97,7 @@ async def stylize(
     cuadrado = center_square(foto).convert("RGB")
     origen = DATA / "originales" / f"{marca}.jpg"
     cuadrado.save(origen, "JPEG", quality=92)
+    podar(DATA / "originales")
 
     buf = io.BytesIO()
     cuadrado.save(buf, "JPEG", quality=92)
@@ -147,6 +149,7 @@ async def stylize(
         # serviria una imagen a medio dibujar en el siguiente reintento.
         if es_final:
             ultima.save(DATA / "resultados" / f"{marca}_{style.value}.png")
+            podar(DATA / "resultados")
             cache.put(capture_id, a_frame(ultima))
         log.info("%s: %d bytes de foto -> %s -> %d frames (total %.1fs)",
                  marca, len(crudo), style.value, n, time.monotonic() - t0)
